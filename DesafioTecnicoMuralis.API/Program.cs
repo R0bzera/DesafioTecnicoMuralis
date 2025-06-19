@@ -24,7 +24,16 @@ builder.Services.AddHttpClient<ICepService, ViaCepService>();
 builder.Services.AddScoped<IEnderecoRepository, EnderecoRepository>();
 builder.Services.AddScoped<IContatoRepository, ContatoRepository>();
 
+builder.Services.AddCors(option => option.AddPolicy(name:"Policy",
+    Policy=>
+    {
+        Policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    }
+));
+
 var app = builder.Build();
+
+app.UseCors("Policy");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

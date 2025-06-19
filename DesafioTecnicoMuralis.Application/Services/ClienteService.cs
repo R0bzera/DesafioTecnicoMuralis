@@ -103,13 +103,14 @@ namespace DesafioTecnicoMuralis.Application.Services
             }
         }
 
-        public async Task<Retorno<string>> AtualizarAsync(int id, ClienteDto dto)
+        public async Task<Retorno<ClienteCompletoDto>> AtualizarAsync(int id, ClienteDto dto)
         {
             try
             {
-                var clienteExistente = await _repository.ObterPorIdAsync(id);
-                if (clienteExistente is null)
-                    return Retorno<string>.Falha("Cliente não encontrado.");
+                var resultadoCliente = await _repository.ObterPorIdAsync(id);
+
+                if (!resultadoCliente.Sucesso || resultadoCliente.Dados == null)
+                    return Retorno<ClienteCompletoDto>.Falha("Cliente não encontrado.");
 
                 if (dto.Enderecos?.Any() == true)
                 {
@@ -118,47 +119,45 @@ namespace DesafioTecnicoMuralis.Application.Services
                         if (!string.IsNullOrWhiteSpace(endereco.Cep) &&
                             string.IsNullOrWhiteSpace(endereco.Logadouro))
                         {
-                            var resultado = await _cepService.BuscarEnderecoPorCepAsync(endereco.Cep);
+                            var resultadoCep = await _cepService.BuscarEnderecoPorCepAsync(endereco.Cep);
 
-                            if (resultado.Sucesso && resultado.Dados != null)
-                            {
-                                var enderecoPreenchido = resultado.Dados;
+                            if (!resultadoCep.Sucesso || resultadoCep.Dados == null)
+                                return Retorno<ClienteCompletoDto>.Falha(resultadoCep.Mensagem ?? "Erro ao buscar endereço.");
 
-                                endereco.Logadouro = enderecoPreenchido.Logadouro;
-                                endereco.Bairro = enderecoPreenchido.Bairro;
-                                endereco.Cidade = enderecoPreenchido.Cidade;
-                                endereco.Estado = enderecoPreenchido.Estado;
-                                endereco.Complemento ??= enderecoPreenchido.Complemento;
-                            }
-                            else
-                            {
-                                return Retorno<string>.Falha(resultado.Mensagem ?? "Erro ao buscar endereço.");
-                            }
+                            var enderecoPreenchido = resultadoCep.Dados;
+                            endereco.Logadouro = enderecoPreenchido.Logadouro;
+                            endereco.Bairro = enderecoPreenchido.Bairro;
+                            endereco.Cidade = enderecoPreenchido.Cidade;
+                            endereco.Estado = enderecoPreenchido.Estado;
+                            endereco.Complemento ??= enderecoPreenchido.Complemento;
                         }
                     }
                 }
 
                 var clienteAtualizado = _mapper.Map<ClienteEntity>(dto);
                 clienteAtualizado.Id = id;
-                clienteAtualizado.DataCadastro = clienteExistente.Dados?.DataCadastro ?? DateTime.Now;
+                clienteAtualizado.DataCadastro = resultadoCliente.Dados.DataCadastro;
                 clienteAtualizado.DataAlteracao = DateTime.Now;
 
                 await _repository.AtualizarAsync(clienteAtualizado);
 
-                return Retorno<string>.Ok("Cliente atualizado com sucesso.");
+                var clienteAtualizadoCompleto = await _repository.ObterPorIdAsync(id);
+                if (!clienteAtualizadoCompleto.Sucesso || clienteAtualizadoCompleto.Dados == null)
+                    return Retorno<ClienteCompletoDto>.Falha("Erro ao recuperar cliente atualizado.");
+
+                return Retorno<ClienteCompletoDto>.Ok(clienteAtualizadoCompleto.Dados);
             }
             catch (Exception ex)
             {
-                return Retorno<string>.Falha($"Erro ao atualizar cliente: {ex.Message}");
+                return Retorno<ClienteCompletoDto>.Falha($"Erro ao atualizar cliente: {ex.Message}");
             }
         }
-
         public async Task<Retorno<string>> RemoverAsync(int id)
         {
             try
             {
                 var cliente = await _repository.ObterPorIdAsync(id);
-                if (cliente is null)
+                if (!cliente.Sucesso || cliente.Dados is null)
                     return Retorno<string>.Falha("Cliente não encontrado.");
 
                 await _repository.RemoverAsync(id);

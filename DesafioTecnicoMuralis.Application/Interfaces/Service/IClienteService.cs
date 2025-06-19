@@ -14,7 +14,7 @@ namespace DesafioTecnicoMuralis.Application.Interfaces.Service
         Task<Retorno<IEnumerable<ClienteCompletoDto>>> ListarTodosAsync();
         Task<Retorno<ClienteCompletoDto?>> ObterPorIdAsync(int id);
         Task<Retorno<string>> CriarAsync(ClienteDto dto);
-        Task<Retorno<string>> AtualizarAsync(int id, ClienteDto dto);
+        Task<Retorno<ClienteCompletoDto>> AtualizarAsync(int id, ClienteDto dto);
         Task<Retorno<string>> RemoverAsync(int id);
     }
 }
