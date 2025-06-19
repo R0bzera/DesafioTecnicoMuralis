@@ -1,5 +1,5 @@
 📄 Desafio Técnico Muralis
-Este projeto consiste em uma API RESTful desenvolvida em .NET 8, que implementa um CRUD completo de Clientes, incluindo seus Endereços e Contatos.
+Este projeto consiste em uma API RESTful desenvolvida em .NET 8, que implementa um CRUD completo de Clientes, incluindo seus Endereços e Contatos. Para testar basta iniciar o projeto que você terá acesso ao Swagger com os endpoints.
 
 ✅ Tecnologias Utilizadas
 .NET 8
