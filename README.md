@@ -1,6 +1,8 @@
 📄 Desafio Técnico Muralis
 Este projeto consiste em uma API RESTful desenvolvida em .NET 8, que implementa um CRUD completo de Clientes, incluindo seus Endereços e Contatos. Para testar basta iniciar o projeto que você terá acesso ao Swagger com os endpoints.
 
+⚠️ Para testar tenha o SDK 8 inicie o projeto e coloque o /Swagger após o endereço localhost exemplo: https://localhost:7061/swagger ou http://localhost:5046/swagger
+
 ✅ Tecnologias Utilizadas
 .NET 8
 
