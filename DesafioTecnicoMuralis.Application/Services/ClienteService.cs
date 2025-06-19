@@ -95,7 +95,7 @@ namespace DesafioTecnicoMuralis.Application.Services
                 await _enderecoRepository.AdicionarEnderecosAsync(resultadoId.Dados, cliente.Enderecos.ToList());
                 await _contatoRepository.AdicionarContatosAsync(resultadoId.Dados, cliente.Contatos.ToList());
 
-                return Retorno<string>.Ok("Cliente cadastrado com sucesso.");
+                return Retorno<string>.Ok($"Cliente ID {resultadoId.Dados} cadastrado com sucesso.");
             }
             catch (Exception ex)
             {

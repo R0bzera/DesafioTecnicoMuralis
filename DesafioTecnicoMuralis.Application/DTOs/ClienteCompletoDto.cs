@@ -8,6 +8,7 @@ namespace DesafioTecnicoMuralis.Application.DTOs
 {
     public class ClienteCompletoDto
     {
+        public int Id { get; set; }
         public string Nome { get; set; } = string.Empty;
         public DateTime DataCadastro { get; set; }
 
