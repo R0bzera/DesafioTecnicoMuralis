@@ -64,7 +64,7 @@ namespace DesafioTecnicoMuralis.Infrastructure.Repositories
                 await connection.OpenAsync();
 
                 var command = connection.CreateCommand();
-                command.CommandText = @"SELECT C.Nome, C.DataCadastro, E.Cep, E.Logadouro, E.Cidade, E.Numero, E.Complemento, CON.Contato 
+                command.CommandText = @"SELECT C.Id, C.Nome, C.DataCadastro, E.Cep, E.Logadouro, E.Cidade, E.Numero, E.Complemento, CON.Contato 
                                     FROM Clientes C
                                     JOIN Enderecos E on E.ClienteId = C.Id
                                     JOIN Contatos CON on CON.ClienteId = C.Id
@@ -76,14 +76,15 @@ namespace DesafioTecnicoMuralis.Infrastructure.Repositories
                 {
                     var dto = new ClienteCompletoDto
                     {
-                        Nome = reader.GetString(0),
-                        DataCadastro = reader.GetDateTime(1),
-                        Cep = reader.GetString(2),
-                        Logadouro = reader.GetString(3),
-                        Cidade = reader.GetString(4),
-                        Numero = reader.GetString(5),
-                        Complemento = reader.GetString(6),
-                        Contato = reader.GetString(7)
+                        Id = reader.GetInt32(0),
+                        Nome = reader.GetString(1),
+                        DataCadastro = reader.GetDateTime(2),
+                        Cep = reader.GetString(3),
+                        Logadouro = reader.GetString(4),
+                        Cidade = reader.GetString(5),
+                        Numero = reader.GetString(6),
+                        Complemento = reader.GetString(7),
+                        Contato = reader.GetString(8)
                     };
 
                     return Retorno<ClienteCompletoDto?>.Ok(dto);
