@@ -1,4 +1,6 @@
-﻿using DesafioTecnicoMuralis.Domain.Entities;
+﻿using DesafioTecnicoMuralis.Application.DTOs;
+using DesafioTecnicoMuralis.Application.Retornos;
+using DesafioTecnicoMuralis.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +11,10 @@ namespace DesafioTecnicoMuralis.Application.Interfaces.Repository
 {
     public interface IClienteRepository
     {
-        Task<IEnumerable<ClienteEntity>> ListarTodosAsync();
-        Task<ClienteEntity?> ObterPorIdAsync(int id);
-        Task<int>AdicionarAsync(ClienteEntity cliente);
-        Task AtualizarAsync(ClienteEntity cliente);
-        Task RemoverAsync(int id);
+        Task<Retorno<IEnumerable<ClienteCompletoDto>>> ListarTodosAsync();
+        Task<Retorno<ClienteCompletoDto?>> ObterPorIdAsync(int id);
+        Task<Retorno<int>> AdicionarAsync(ClienteEntity cliente);
+        Task<Retorno<bool>> AtualizarAsync(ClienteEntity cliente);
+        Task<Retorno<bool>> RemoverAsync(int id);
     }
 }

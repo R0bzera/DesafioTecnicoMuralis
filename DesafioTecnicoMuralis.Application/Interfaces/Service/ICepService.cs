@@ -1,4 +1,5 @@
 ﻿using DesafioTecnicoMuralis.API.DTOs;
+using DesafioTecnicoMuralis.Application.Retornos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace DesafioTecnicoMuralis.Application.Interfaces.Service
 {
     public interface ICepService
     {
-        Task<EnderecoDto?> BuscarEnderecoPorCepAsync(string cep);
+        Task<Retorno<EnderecoDto>> BuscarEnderecoPorCepAsync(string cep);
     }
 }

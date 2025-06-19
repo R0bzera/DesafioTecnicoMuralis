@@ -1,3 +1,4 @@
+using AutoMapper;
 using DesafioTecnicoMuralis.API.SwaggerExemplos;
 using DesafioTecnicoMuralis.Application.Interfaces.Repository;
 using DesafioTecnicoMuralis.Application.Interfaces.Service;
@@ -19,8 +20,9 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<IClienteService, ClienteService>();
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
-builder.Services.AddScoped<ICepService, ViaCepService>();
+builder.Services.AddHttpClient<ICepService, ViaCepService>();
 builder.Services.AddScoped<IEnderecoRepository, EnderecoRepository>();
+builder.Services.AddScoped<IContatoRepository, ContatoRepository>();
 
 var app = builder.Build();
 
@@ -35,3 +37,6 @@ app.UseHttpsRedirection();
 app.MapControllers();
 
 app.Run();
+
+var mapper = app.Services.GetRequiredService<IMapper>();
+mapper.ConfigurationProvider.AssertConfigurationIsValid();

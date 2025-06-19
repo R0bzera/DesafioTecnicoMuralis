@@ -14,15 +14,15 @@ namespace DesafioTecnicoMuralis.Application.Mappings
         public ClienteProfile()
         {
             CreateMap<ClienteDto, ClienteEntity>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.DataCadastro, opt => opt.Ignore())
-                .ForMember(dest => dest.DataAlteracao, opt => opt.Ignore());
+                .ForMember(dest => dest.Enderecos, opt => opt.MapFrom(src => src.Enderecos))
+                .ForMember(dest => dest.Contatos, opt => opt.MapFrom(src => src.Contatos));
 
-            CreateMap<EnderecoDto, EnderecoEntity>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore());
+            CreateMap<ClienteEntity, ClienteDto>()
+                .ForMember(dest => dest.Enderecos, opt => opt.MapFrom(src => src.Enderecos))
+                .ForMember(dest => dest.Contatos, opt => opt.MapFrom(src => src.Contatos));
 
-            CreateMap<ContatoDto, ContatoEntity>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore());
+            CreateMap<EnderecoDto, EnderecoEntity>().ReverseMap();
+            CreateMap<ContatoDto, ContatoEntity>().ReverseMap();
         }
     }
 }

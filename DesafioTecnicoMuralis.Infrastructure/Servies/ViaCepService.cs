@@ -1,5 +1,8 @@
-﻿using DesafioTecnicoMuralis.API.DTOs;
+﻿using AutoMapper;
+using DesafioTecnicoMuralis.API.DTOs;
 using DesafioTecnicoMuralis.Application.Interfaces.Service;
+using DesafioTecnicoMuralis.Application.Retornos;
+using DesafioTecnicoMuralis.Infrastructure.ExternalEntities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,35 +15,32 @@ namespace DesafioTecnicoMuralis.Infrastructure.Servies
     public class ViaCepService : ICepService
     {
         private readonly HttpClient _httpClient;
+        private readonly IMapper _mapper;
 
-        public ViaCepService(HttpClient httpClient)
+        public ViaCepService(HttpClient httpClient, IMapper mapper)
         {
             _httpClient = httpClient;
+            _mapper = mapper;
         }
 
-        public async Task<EnderecoDto?> BuscarEnderecoPorCepAsync(string cep)
+        public async Task<Retorno<EnderecoDto>> BuscarEnderecoPorCepAsync(string cep)
         {
-            var response = await _httpClient.GetFromJsonAsync<ViaCepResponse>($"https://viacep.com.br/ws/{cep}/json/");
-            if (response is null || response.Erro) return null;
-
-            return new EnderecoDto
+            try
             {
-                Cep = cep,
-                Rua = response.Logradouro,
-                Bairro = response.Bairro,
-                Cidade = response.Localidade,
-                Estado = response.Uf,
-                Numero = string.Empty
-            };
-        }
-    }
+                var response = await _httpClient.GetFromJsonAsync<ViaCepRetorno>($"https://viacep.com.br/ws/{cep}/json/");
 
-    public class ViaCepResponse
-    {
-        public string Logradouro { get; set; } = "";
-        public string Bairro { get; set; } = "";
-        public string Localidade { get; set; } = "";
-        public string Uf { get; set; } = "";
-        public bool Erro { get; set; } = false;
+                if (response is null || response.Erro)
+                    return Retorno<EnderecoDto>.Falha("CEP inválido ou não encontrado.");
+
+                var endereco = _mapper.Map<EnderecoDto>(response);
+                endereco.Cep = cep;
+
+                return Retorno<EnderecoDto>.Ok(endereco);
+            }
+            catch (Exception ex)
+            {
+                return Retorno<EnderecoDto>.Falha($"Erro ao consultar CEP: {ex.Message}");
+            }
+        }
     }
 }

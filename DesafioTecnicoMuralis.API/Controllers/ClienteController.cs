@@ -5,36 +5,72 @@ using Microsoft.AspNetCore.Mvc;
 namespace DesafioTecnicoMuralis.API.Controllers;
 
 [ApiController]
-[Route("api/cliente")]
+[Route("cliente")]
 public class ClienteController : ControllerBase
 {
     private readonly IClienteService _clienteService;
+    private readonly ICepService _cepService;
 
-    public ClienteController(IClienteService clienteService)
+    public ClienteController(IClienteService clienteService, ICepService cepService)
     {
         _clienteService = clienteService;
+        _cepService = cepService;
     }
 
     [HttpPost("criar")]
     public async Task<IActionResult> Criar([FromBody] ClienteDto dto)
     {
-        await _clienteService.CriarAsync(dto);
-        return Created("", null);
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+        try
+        {
+            var resultado = await _clienteService.CriarAsync(dto);
+
+            if (resultado.Sucesso)
+                return Created(string.Empty, resultado.Dados);
+
+            return BadRequest(resultado.Mensagem);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpGet("listar")]
     public async Task<IActionResult> Listar()
     {
-        var clientes = await _clienteService.ListarTodosAsync();
-        return Ok(clientes);
+        try
+        {
+            var resultado = await _clienteService.ListarTodosAsync();
+
+            if (resultado.Sucesso)
+                return Ok(resultado.Dados);
+
+            return BadRequest(resultado.Mensagem);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpGet("obter/{id}")]
     public async Task<IActionResult> ObterPorId(int id)
     {
-        var cliente = await _clienteService.ObterPorIdAsync(id);
-        if (cliente is null) return NotFound();
-        return Ok(cliente);
+        try
+        {
+            var resultado = await _clienteService.ObterPorIdAsync(id);
+
+            if (resultado.Sucesso)
+                return Ok(resultado.Dados);
+
+            return BadRequest(resultado.Mensagem);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 
     [HttpPut("editar/{id}")]
@@ -42,12 +78,16 @@ public class ClienteController : ControllerBase
     {
         try
         {
-            await _clienteService.AtualizarAsync(id, dto);
-            return NoContent();
+            var resultado = await _clienteService.AtualizarAsync(id, dto);
+
+            if (resultado.Sucesso)
+                return Ok(resultado.Dados);
+
+            return BadRequest(resultado.Mensagem);
         }
-        catch (InvalidOperationException)
+        catch (Exception ex)
         {
-            return NotFound();
+            return BadRequest(ex.Message);
         }
     }
 
@@ -56,12 +96,34 @@ public class ClienteController : ControllerBase
     {
         try
         {
-            await _clienteService.RemoverAsync(id);
-            return NoContent();
+            var resultado = await _clienteService.RemoverAsync(id);
+
+            if (resultado.Sucesso)
+                return Ok(resultado.Dados);
+
+            return BadRequest(resultado.Mensagem);
         }
-        catch (InvalidOperationException)
+        catch (Exception ex)
         {
-            return NotFound();
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("consultar-cep/{cep}")]
+    public async Task<IActionResult> ConsultarCep(string cep)
+    {
+        try
+        {
+            var resultado = await _cepService.BuscarEnderecoPorCepAsync(cep);
+
+            if (resultado.Sucesso)
+                return Ok(resultado.Dados);
+
+            return BadRequest(resultado.Mensagem);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
         }
     }
 }

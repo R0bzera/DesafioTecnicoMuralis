@@ -1,12 +1,21 @@
-﻿namespace DesafioTecnicoMuralis.API.DTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DesafioTecnicoMuralis.API.DTOs
 {
     public class EnderecoDto
     {
-        public string Rua { get; set; } = string.Empty;
-        public string Numero { get; set; } = string.Empty;
-        public string Bairro { get; set; } = string.Empty;
-        public string Cidade { get; set; } = string.Empty;
-        public string Estado { get; set; } = string.Empty;
-        public string Cep { get; set; } = string.Empty;
+        [Required(ErrorMessage = "O CEP é obrigatório.")]
+        [RegularExpression(@"^\d{8}$", ErrorMessage = "O CEP deve conter exatamente 8 dígitos numéricos sem caracteres especiais")]
+        public string Cep { get; set; } = null!;
+
+        [Required(ErrorMessage = "O número é obrigatório.")]
+        public string Numero { get; set; } = null!;
+
+        public string? Complemento { get; set; }
+
+        public string? Logadouro { get; set; }
+        public string? Bairro { get; set; }
+        public string? Cidade { get; set; }
+        public string? Estado { get; set; }
     }
 }

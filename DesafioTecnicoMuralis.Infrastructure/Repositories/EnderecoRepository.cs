@@ -1,4 +1,5 @@
 ﻿using DesafioTecnicoMuralis.Application.Interfaces.Repository;
+using DesafioTecnicoMuralis.Application.Retornos;
 using DesafioTecnicoMuralis.Domain.Entities;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
@@ -19,24 +20,34 @@ namespace DesafioTecnicoMuralis.Infrastructure.Repositories
             _connectionString = configuration.GetConnectionString("DefaultConnection")!;
         }
 
-        public async Task AdicionarEnderecosAsync(int clienteId, List<EnderecoEntity> enderecos)
+        public async Task<Retorno<string>> AdicionarEnderecosAsync(int clienteId, List<EnderecoEntity> enderecos)
         {
-            using var connection = new SqliteConnection(_connectionString);
-            await connection.OpenAsync();
-
-            foreach (var endereco in enderecos)
+            try
             {
-                var cmd = connection.CreateCommand();
-                cmd.CommandText = @"INSERT INTO Enderecos (Cep, Rua, Numero, Bairro, Cidade, Estado, ClienteId)
-                                    VALUES ($cep, $rua, $numero, $bairro, $cidade, $estado, $clienteId);";
+                using var connection = new SqliteConnection(_connectionString);
+                await connection.OpenAsync();
 
-                cmd.Parameters.AddWithValue("$cep", endereco.Cep);
-                cmd.Parameters.AddWithValue("$rua", endereco.Logadouro);
-                cmd.Parameters.AddWithValue("$numero", endereco.Numero);
-                cmd.Parameters.AddWithValue("$cidade", endereco.Cidade);
-                cmd.Parameters.AddWithValue("$clienteId", clienteId);
+                foreach (var endereco in enderecos)
+                {
+                    var cmd = connection.CreateCommand();
+                    cmd.CommandText = @"INSERT INTO Enderecos (Cep, Logadouro, Numero, Complemento, Cidade, ClienteId) 
+                                VALUES ($cep, $logadouro, $numero, $complemento, $cidade, $clienteId);";
 
-                await cmd.ExecuteNonQueryAsync();
+                    cmd.Parameters.AddWithValue("$cep", endereco.Cep);
+                    cmd.Parameters.AddWithValue("$logadouro", endereco.Logadouro);
+                    cmd.Parameters.AddWithValue("$cidade", endereco.Cidade);
+                    cmd.Parameters.AddWithValue("$numero", endereco.Numero);
+                    cmd.Parameters.AddWithValue("$complemento", endereco.Complemento ?? string.Empty);
+                    cmd.Parameters.AddWithValue("$clienteId", clienteId);
+
+                    await cmd.ExecuteNonQueryAsync();
+                }
+
+                return Retorno<string>.Ok("Endereços adicionados com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return Retorno<string>.Falha($"Erro ao adicionar endereços: {ex.Message}");
             }
         }
     }

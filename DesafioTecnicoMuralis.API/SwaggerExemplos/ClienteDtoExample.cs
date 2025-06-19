@@ -13,21 +13,22 @@ namespace DesafioTecnicoMuralis.API.SwaggerExemplos
             {
                 schema.Example = new OpenApiObject
                 {
-                    ["nome"] = new OpenApiString("Cliente"),
+                    ["nome"] = new OpenApiString("Rob"),
                     ["enderecos"] = new OpenApiArray
                 {
                     new OpenApiObject
                     {
                         ["cep"] = new OpenApiString("01001000"),
-                        ["numero"] = new OpenApiString("123")
+                        ["numero"] = new OpenApiString("123"),
+                        ["complemento"] = new OpenApiString("Casa 2, ap 101")
                     }
                 },
                     ["contatos"] = new OpenApiArray
                 {
                     new OpenApiObject
                     {
-                        ["tipo"] = new OpenApiString("Email ou Telefone"),
-                        ["valor"] = new OpenApiString("Cliente@email.com ou 1199999-9999")
+                        ["tipoContato"] = new OpenApiInteger(1),
+                        ["contato"] = new OpenApiString("rob@email.com")
                     }
                 }
                 };

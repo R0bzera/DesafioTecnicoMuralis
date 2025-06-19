@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace DesafioTecnicoMuralis.Application.Interfaces.Repository
 {
-    public interface IEnderecoRepository
+    public interface IContatoRepository
     {
-        Task<Retorno<string>> AdicionarEnderecosAsync(int clienteId, List<EnderecoEntity> enderecos);
+        Task<Retorno<string>> AdicionarContatosAsync(int clienteId, IEnumerable<ContatoEntity> contatos);
     }
 }

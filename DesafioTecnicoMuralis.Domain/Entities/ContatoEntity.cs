@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DesafioTecnicoMuralis.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,9 +10,8 @@ namespace DesafioTecnicoMuralis.Domain.Entities
     public class ContatoEntity
     {
         public int Id { get; set; }
-        public string Tipo { get; set; }
-        public string Numero { get; set; }
-
+        public TipoContato TipoContato { get; set; }
+        public string Contato { get; set; }
         public int ClienteId { get; set; }
         public ClienteEntity Cliente { get; set; } = null!;
     }
